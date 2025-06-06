@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>Search XNXX</title>
+ <style>
+ body {
+ background-color: #0b0b0b;
+ color: #ff4c7d;
+ font-family: 'Segoe UI', sans-serif;
+ padding: 20px;
+ margin: 0;
+ }
+
+ h1 {
+ text-align: center;
+ color: #ff4c7d;
+ text-shadow: 0 0 10px #ff4c7d;
+ }
+
+ input, button {
+ width: 100%;
+ padding: 12px;
+ margin: 10px 0;
+ border-radius: 5px;
+ font-size: 16px;
+ border: none;
+ }
+
+ input {
+ background: #1c1c1c;
+ color: #fff;
+ border: 1px solid #ff4c7d;
+ }
+
+ button {
+ background-color: #ff4c7d;
+ color: white;
+ cursor: pointer;
+ box-shadow: 0 0 15px #ff4c7d;
+ }
+
+ button:hover {
+ background-color: #e6005c;
+ }
+
+ .results {
+ margin-top: 20px;
+ background-color: #1a1a1a;
+ padding: 15px;
+ border-radius: 5px;
+ box-shadow: 0 0 10px #ff4c7d;
+ }
+
+ .video {
+ margin-bottom: 15px;
+ padding-bottom: 10px;
+ border-bottom: 1px solid #333;
+ }
+
+ .video:last-child {
+ border-bottom: none;
+ }
+
+ a {
+ color: #00ffff;
+ text-decoration: none;
+ }
+
+ @media (max-width: 600px) {
+ h1 {
+ font-size: 20px;
+ }
+ }
+ </style>
+</head>
+<body>
+
+ <h1>Pencarian XNXX</h1>
+ <input type="text" id="query" placeholder="Masukkan kata kunci (misal: anime)">
+ <button onclick="searchXNXX()">Cari Sekarang</button>
+
+ <div id="results" class="results"></div>
+
+ <script>
+ async function searchXNXX() {
+ const q = document.getElementById("query").value.trim();
+ const resultsDiv = document.getElementById("results");
+ resultsDiv.innerHTML = "";
+
+ if (!q) {
+ alert("Masukkan kata kunci pencarian!");
+ return;
+ }
+
+ resultsDiv.innerHTML = "Sedang mencari...";
+
+ try {
+ const res = await fetch(`https://restapi-v2.simplebot.my.id/search/xnxx?q=${encodeURIComponent(q)}`);
+ const data = await res.json();
+
+ if (!data.status) {
+ resultsDiv.innerHTML = "<p>Gagal mendapatkan hasil pencarian.</p>";
+ return;
+ }
+
+ let html = `<p><strong>Query:</strong> ${q}<br><strong>Ditemukan:</strong> ${data.result.length} video</p>`;
+
+ data.result.slice(0, 10).forEach((video, i) => {
+ html += `
+ <div class="video">
+ <strong>${i + 1}. ${video.title}</strong><br>
+ Info: ${video.info}<br>
+ <a href="${video.link}" target="_blank">Tonton Video</a>
+ </div>
+ `;
+ });
+
+ if (data.result.length > 10) {
+ html += `<p><em>Dan ${data.result.length - 10} hasil lainnya... Gunakan <code>xnxxdown [link]</code> untuk download.</em></p>`;
+ }
+
+ resultsDiv.innerHTML = html;
+ } catch (err) {
+ console.error(err);
+ resultsDiv.innerHTML = `<p>Terjadi kesalahan: ${err.message}</p>`;
+ }
+ }
+ </script>
+
+</body>
+</html>
